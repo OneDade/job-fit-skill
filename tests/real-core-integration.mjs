@@ -1,10 +1,15 @@
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-const skillRoot = resolve("."); const coreRoot = resolve("../job-fit-core"); const temp = mkdtempSync(join(tmpdir(), "jfs-real-core-")); const cache = join(temp, "npm-cache"); const env = { ...process.env, NPM_CONFIG_CACHE: cache };
+const skillRoot = resolve("."); const coreRoot = resolve("../job-fit-core");
+if (!process.env.CORE_TARBALL && !existsSync(join(coreRoot, "package.json"))) {
+  console.log("real packed Core integration: SKIPPED (set CORE_TARBALL or place job-fit-core beside this checkout)");
+  process.exit(0);
+}
+const temp = mkdtempSync(join(tmpdir(), "jfs-real-core-")); const cache = join(temp, "npm-cache"); const env = { ...process.env, NPM_CONFIG_CACHE: cache };
 let ownedCoreTarball; let skillTarball;
 function pack(root) { const packed = JSON.parse(execFileSync("npm", ["pack", "--json", "--ignore-scripts"], { cwd: root, encoding: "utf8", env }))[0]; return resolve(root, packed.filename); }
 function run(bin, workspace, action, input, key, runtime) { return spawnSync(bin, [action, "--root", workspace, "--input", input, "--idempotency-key", key], { encoding: "utf8", env: { ...env, JOB_FIT_RUNTIME_MODULE: runtime } }); }
