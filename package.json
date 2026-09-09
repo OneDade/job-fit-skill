@@ -52,12 +52,21 @@
     "commander": "^14.0.0",
     "zod": "^4.1.5"
   },
-  "bundleDependencies": ["commander", "zod"],
-  "peerDependencies": { "@job-fit/core": "^0.1.0" },
-  "peerDependenciesMeta": { "@job-fit/core": { "optional": true } },
+  "bundleDependencies": [
+    "commander",
+    "zod"
+  ],
+  "peerDependencies": {
+    "@job-fit/core": "^0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@job-fit/core": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/node": "^24.3.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^5.0.0"
   }
 }
