@@ -1,0 +1,63 @@
+{
+  "name": "@job-fit/skill",
+  "version": "0.1.0",
+  "description": "Evidence-grounded local Agent Skill for job-fit analysis and resume tailoring",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "bin": {
+    "job-fit": "dist/src/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/src/schemas.d.ts",
+      "import": "./dist/src/schemas.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "skills",
+    "docs",
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "THIRD_PARTY_NOTICES.md",
+    "UPSTREAM.md",
+    "README.md"
+  ],
+  "scripts": {
+    "clean": "node --input-type=module -e \"import {rmSync} from 'node:fs'; rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:contract": "vitest run tests/contract",
+    "test:e2e": "vitest run tests/e2e",
+    "check:skill": "node scripts/check-skill.mjs",
+    "check:attribution": "node scripts/check-attribution.mjs",
+    "check:schemas": "node scripts/check-schemas.mjs",
+    "test:pack": "npm run build && node tests/pack-smoke.mjs",
+    "test:integration": "node tests/real-core-integration.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run check:skill && npm run check:attribution && npm run check:schemas && npm run test:pack && npm run test:integration"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "zod": "^4.1.5"
+  },
+  "bundleDependencies": ["commander", "zod"],
+  "peerDependencies": { "@job-fit/core": "^0.1.0" },
+  "peerDependenciesMeta": { "@job-fit/core": { "optional": true } },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

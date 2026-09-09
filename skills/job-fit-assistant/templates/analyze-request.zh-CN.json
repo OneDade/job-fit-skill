@@ -1,0 +1,9 @@
+{
+  "resumeFiles": ["简历.pdf"],
+  "jobs": [{ "id": "jd-backend", "text": "在这里粘贴至少 40 个字符的岗位描述……" }],
+  "projectFiles": [],
+  "repositories": [],
+  "confirmedFacts": [],
+  "locale": "zh-CN",
+  "reportFormats": ["json", "markdown"]
+}
