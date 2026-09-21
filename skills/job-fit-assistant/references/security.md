@@ -8,3 +8,5 @@ Adapted from upstream `SECURITY.md` and `tools/security_guards.py`; see `UPSTREA
 - stdout contains one JSON result; stderr contains one safe JSON error. Never log identity, resume/JD text, model output or artifact bytes.
 - `.job-fit` is private local state: directory mode 0700 and file mode 0600 where supported. Writes are atomic. Deletion requires `{ "confirm": true }` and removes only a marked app-owned `.job-fit` directory.
 - This CLI has no account, membership or cloud storage. The mini-program may separately offer opt-in member cloud storage; those policies and credentials never belong here.
+- Portable mode uses the host Agent's attachment, model and document tools rather than `.job-fit`. Do not describe that mode as local-only: selected content may be processed under the host or configured model provider's data policy. State this boundary when the user asks about privacy.
+- Never require private credentials inside the Skill package or chat. Use the host's existing secret or connector mechanism when a configured runtime needs credentials.

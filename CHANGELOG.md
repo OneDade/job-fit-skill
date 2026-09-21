@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Added a natural-language entry that accepts an attached resume and JD without exposing JSON, paths or idempotency details.
+- Added a portable host workflow for Codex, Claude Code, WorkBuddy, QwenWork and compatible office Agents when the optional CLI runtime is unavailable.
+- Added Codex UI metadata, host installation guidance and explicit portable-versus-verified output labels.
+- Clarified cloud-model privacy boundaries and removed the unpublished npm packages from the documented installation path.
+- Added plain-Chinese display labels and jargon explanations so Chinese users do not see raw match-state codes or unexplained English terms.
+
 ## 0.1.0 - 2026-09-07
 
 - Initial Agent Skill and deterministic JSON CLI.

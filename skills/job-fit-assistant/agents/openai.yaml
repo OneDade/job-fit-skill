@@ -1,0 +1,6 @@
+interface:
+  display_name: "Job Fit 求职助手"
+  short_description: "分析简历与 JD，判断投递价值并生成有证据约束的定制简历"
+  default_prompt: "使用 $job-fit-assistant 分析我附上的简历和 JD，告诉我值不值得投，然后帮我生成定制简历。"
+policy:
+  allow_implicit_invocation: true
