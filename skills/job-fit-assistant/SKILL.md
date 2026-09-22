@@ -7,7 +7,7 @@ metadata:
   description_zh: "分析简历与 JD，判断是否值得投递，并生成有证据、需确认高风险表述的定制简历。"
   description_en: "Analyze a resume against supplied JDs, recommend whether to apply, and create an evidence-grounded tailored resume."
   category: productivity
-  version: "0.1.0"
+  version: "0.1.1"
   author: "OneDade"
 ---
 

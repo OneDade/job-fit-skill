@@ -46,7 +46,7 @@ async function prepareReferencedFiles(action: Exclude<ActionName, "delete-local-
 }
 
 export function createProgram(): Command {
-  const program = new Command().name("job-fit").description("Evidence-grounded local job-fit assistant").version("0.1.0").showHelpAfterError().exitOverride().configureOutput({ writeOut: (text) => process.stdout.write(text), writeErr: () => undefined });
+  const program = new Command().name("job-fit").description("Evidence-grounded local job-fit assistant").version("0.1.1").showHelpAfterError().exitOverride().configureOutput({ writeOut: (text) => process.stdout.write(text), writeErr: () => undefined });
   for (const action of ["analyze", "optimize-resume", "render-resume", "delete-local-data"] as const) {
     program.command(action).description(`${action} action`).option("--input <path>", "request JSON path, or - for stdin", "-").requiredOption("--root <path>", "private workspace root").requiredOption("--idempotency-key <key>", "1–200 character retry key").action((opts: Options) => execute(action, opts));
   }

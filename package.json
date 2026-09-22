@@ -1,6 +1,6 @@
 {
   "name": "@job-fit/skill",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Evidence-grounded local Agent Skill for job-fit analysis and resume tailoring",
   "license": "MIT",
   "type": "module",
@@ -30,7 +30,8 @@
     "CHANGELOG.md",
     "THIRD_PARTY_NOTICES.md",
     "UPSTREAM.md",
-    "README.md"
+    "README.md",
+    "README.en.md"
   ],
   "scripts": {
     "clean": "node --input-type=module -e \"import {rmSync} from 'node:fs'; rmSync('dist',{recursive:true,force:true})\"",
