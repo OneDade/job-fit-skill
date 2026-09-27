@@ -73,6 +73,16 @@ No. It analyzes job descriptions you supply. It does not sign in to job boards, 
 
 That depends on the Agent and model provider you use. Review the client's data and privacy policies. The Skill itself never submits your resume to this repository.
 
+## Acknowledgements and provenance
+
+Parts of this project's Agent workflow design are adapted from
+[`MadsLorentzen/ai-job-search`](https://github.com/MadsLorentzen/ai-job-search)
+(audited commit: [`e6f6f4e`](https://github.com/MadsLorentzen/ai-job-search/commit/e6f6f4e322148cc3558726c4b060486f5388316f)).
+The upstream project is MIT-licensed, and its copyright and license notice are retained here.
+
+See [upstream provenance](UPSTREAM.md) for the adaptation map and excluded features, and
+[third-party notices](THIRD_PARTY_NOTICES.md) for the retained license text. Thanks to Mads Lorentzen for the original open-source work.
+
 ## Developers and advanced use
 
 Ordinary users do not need the CLI. For the local CLI, runtime integration, JSON contracts, deterministic verification, or development, read:

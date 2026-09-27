@@ -73,6 +73,16 @@ Skill 会使用当前 Agent 已有的文档能力。客户端不支持创建文�
 
 这取决于你使用的 Agent 和模型服务。使用前请检查对应客户端的数据与隐私政策。Skill 本身不会把你的简历提交到本仓库。
 
+## 致谢与来源
+
+本项目的部分 Agent 工作流设计借鉴并适配自
+[`MadsLorentzen/ai-job-search`](https://github.com/MadsLorentzen/ai-job-search)
+（审计提交：[`e6f6f4e`](https://github.com/MadsLorentzen/ai-job-search/commit/e6f6f4e322148cc3558726c4b060486f5388316f)）。
+原项目采用 MIT 许可证；本项目保留了原作者的版权与许可声明。
+
+具体借鉴内容、本地改动及未采用功能请查看 [上游来源说明](UPSTREAM.md) 和
+[第三方许可声明](THIRD_PARTY_NOTICES.md)。感谢原作者 Mads Lorentzen 的开源工作。
+
 ## 开发者与高级功能
 
 普通用户不需要配置 CLI。需要本地 CLI、Runtime、JSON 接口、严格验证或二次开发时，请阅读：
