@@ -1,2 +1,2 @@
 import { defineConfig } from "vitest/config";
-export default defineConfig({ test: { environment: "node", testTimeout: 15_000 } });
+export default defineConfig({ test: { environment: "node", testTimeout: 15_000, exclude: ["dist/**", "node_modules/**"], fileParallelism: false } });

@@ -46,11 +46,20 @@ Analyze my resume and this job description, tell me whether I should apply, and 
 
 No JSON, command-line setup, or manual keyword extraction is required.
 
+For the complete company-research, resume, and interview workflow, send:
+
+```text
+Using my resume and this job description, research the company, recommend a resume template, create tailored Word/PDF resumes, and prepare interview-answer outlines.
+```
+
 ## What you get
 
 - One recommendation: apply, apply with risks, or do not apply—plus the decisive reasons.
 - A clear view of direct matches, transferable experience, explicit gaps, and evidence that is missing from the resume.
 - A tailored resume reordered and rewritten for the target role.
+- Three template choices: ATS Minimal, Professional Business, and Technical Project.
+- Word and PDF output when supported, with pagination, reading-order, and selectable-text checks.
+- Cited company research plus interview questions and evidence-grounded answer outlines.
 - No invented experience, metrics, or outcomes when the source material does not support them.
 
 The Agent asks before using risky claims involving metrics, scope, ownership, titles, or dates. It creates DOCX/PDF when the host provides document tools and otherwise delivers an ATS-friendly Markdown resume.

@@ -12,6 +12,7 @@ const CLAIM_WAIT_MS = 30_000;
 const MALFORMED_CLAIM_GRACE_MS = 500;
 type ClaimSnapshot = { ino: number; dev: number; mtimeMs: number; claim?: Claim };
 const activeClaims = new Map<string, () => Promise<void>>();
+const localQueues = new Map<string, Promise<void>>();
 export async function releaseOwnedClaims(): Promise<void> { await Promise.allSettled([...activeClaims.values()].map((release) => release())); }
 export class RunStore {
   constructor(private readonly root: string) {}
@@ -29,36 +30,50 @@ export class RunStore {
   async put(action: string, key: string, requestHash: string, value: unknown): Promise<void> { await atomicWrite(await this.path(action, key), JSON.stringify({ requestHash, value })); }
 
   async run<T>(action: string, key: string, requestHash: string, operation: () => Promise<T>): Promise<{ value: T; cached: boolean }> {
-    const resultPath = await this.path(action, key); const claimPath = `${resultPath}.lock`; const deadline = Date.now() + CLAIM_WAIT_MS;
-    for (;;) {
-      const cached = await this.get<T>(action, key, requestHash); if (cached !== undefined) return { value: cached, cached: true };
-      const owner = randomUUID(); const initialClaim: Claim = { requestHash, createdAt: Date.now(), leaseExpiresAt: Date.now() + CLAIM_LEASE_MS, pid: process.pid, owner };
-      if (!(await createClaim(claimPath, initialClaim))) {
-        const snapshot = await inspectClaim(claimPath);
-        if (!snapshot) continue;
-        if (snapshot.claim && snapshot.claim.requestHash !== requestHash) throw new CliFailure("IDEMPOTENCY_CONFLICT", "idempotency key was already used for a different request");
-        const malformedStale = !snapshot.claim && Date.now() - snapshot.mtimeMs >= MALFORMED_CLAIM_GRACE_MS;
-        const expiredDead = snapshot.claim && snapshot.claim.leaseExpiresAt < Date.now() && !pidIsAlive(snapshot.claim.pid);
-        if (malformedStale || expiredDead) { await removeClaim(claimPath, snapshot, snapshot.claim?.owner); continue; }
-        if (Date.now() >= deadline) throw new CliFailure("INTERNAL_ERROR", "timed out waiting for an in-progress request", true);
-        await new Promise((resolve) => setTimeout(resolve, 20));
-        continue;
+    return withLocalQueue(`${this.root}\0${action}\0${key}`, async () => {
+      const resultPath = await this.path(action, key); const claimPath = `${resultPath}.lock`;
+      const deadline = Date.now() + CLAIM_WAIT_MS;
+      for (;;) {
+        const cached = await this.get<T>(action, key, requestHash); if (cached !== undefined) return { value: cached, cached: true };
+        const owner = randomUUID(); const initialClaim: Claim = { requestHash, createdAt: Date.now(), leaseExpiresAt: Date.now() + CLAIM_LEASE_MS, pid: process.pid, owner };
+        if (!(await createClaim(claimPath, initialClaim))) {
+          const snapshot = await inspectClaim(claimPath);
+          if (!snapshot) continue;
+          if (snapshot.claim && snapshot.claim.requestHash !== requestHash) throw new CliFailure("IDEMPOTENCY_CONFLICT", "idempotency key was already used for a different request");
+          const malformedStale = !snapshot.claim && Date.now() - snapshot.mtimeMs >= MALFORMED_CLAIM_GRACE_MS;
+          const expiredDead = snapshot.claim && snapshot.claim.leaseExpiresAt < Date.now() && !pidIsAlive(snapshot.claim.pid);
+          if (malformedStale || expiredDead) { await removeClaim(claimPath, snapshot, snapshot.claim?.owner); continue; }
+          if (Date.now() >= deadline) throw new CliFailure("INTERNAL_ERROR", "timed out waiting for an in-progress request", true);
+          await new Promise((resolve) => setTimeout(resolve, 20));
+          continue;
+        }
+        let renewing = Promise.resolve(); let heartbeat: NodeJS.Timeout | undefined;
+        const release = async () => { clearInterval(heartbeat); await renewing; const snapshot = await inspectClaim(claimPath).catch(() => undefined); if (snapshot) await removeClaim(claimPath, snapshot, owner); activeClaims.delete(owner); }; activeClaims.set(owner, release);
+        heartbeat = setInterval(() => { renewing = renewing.then(() => renewClaim(claimPath, requestHash, owner)); }, CLAIM_LEASE_MS / 4); heartbeat.unref();
+        try {
+          // The result may have been committed after our pre-claim cache check but
+          // before the previous owner released its claim. Re-check only after we
+          // own the claim so that this process never repeats an already completed
+          // operation in that hand-off window.
+          const completed = await this.get<T>(action, key, requestHash);
+          if (completed !== undefined) return { value: completed, cached: true };
+          const value = await operation(); await this.put(action, key, requestHash, value); return { value, cached: false };
+        }
+        finally { clearInterval(heartbeat); await release(); }
       }
-      let renewing = Promise.resolve(); let heartbeat: NodeJS.Timeout | undefined;
-      const release = async () => { clearInterval(heartbeat); await renewing; const snapshot = await inspectClaim(claimPath).catch(() => undefined); if (snapshot) await removeClaim(claimPath, snapshot, owner); activeClaims.delete(owner); }; activeClaims.set(owner, release);
-      heartbeat = setInterval(() => { renewing = renewing.then(() => renewClaim(claimPath, requestHash, owner)); }, CLAIM_LEASE_MS / 4); heartbeat.unref();
-      try {
-        // The result may have been committed after our pre-claim cache check but
-        // before the previous owner released its claim. Re-check only after we
-        // own the claim so that this process never repeats an already completed
-        // operation in that hand-off window.
-        const completed = await this.get<T>(action, key, requestHash);
-        if (completed !== undefined) return { value: completed, cached: true };
-        const value = await operation(); await this.put(action, key, requestHash, value); return { value, cached: false };
-      }
-      finally { clearInterval(heartbeat); await release(); }
-    }
+    });
   }
+}
+
+async function withLocalQueue<T>(key: string, operation: () => Promise<T>): Promise<T> {
+  const previous = localQueues.get(key) ?? Promise.resolve();
+  let releaseCurrent!: () => void;
+  const current = new Promise<void>((resolveCurrent) => { releaseCurrent = resolveCurrent; });
+  const tail = previous.then(() => current);
+  localQueues.set(key, tail);
+  await previous;
+  try { return await operation(); }
+  finally { releaseCurrent(); if (localQueues.get(key) === tail) localQueues.delete(key); }
 }
 
 async function createClaim(path: string, claim: Claim): Promise<boolean> { const temp = `${path}.${claim.owner}.tmp`; let handle; try { handle = await open(temp, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | constants.O_NOFOLLOW, 0o600); await handle.writeFile(JSON.stringify(claim)); await handle.sync(); await handle.close(); handle = undefined; try { await link(temp, path); return true; } catch (error) { if ((error as NodeJS.ErrnoException).code === "EEXIST") return false; throw error; } } finally { await handle?.close(); await rm(temp, { force: true }).catch(() => undefined); } }

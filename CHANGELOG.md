@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Added public-source company research guidance with citations, retrieval dates and privacy-safe search constraints.
+- Added ATS Minimal, Professional Business and Technical Project template choices while preserving legacy CLI template IDs.
+- Added multi-format document QA requirements and evidence-grounded interview-answer outlines.
+- Made apply recommendations optional instead of a gate for resume and interview workflows.
+
 ## 0.1.1 - 2026-09-23
 
 - Added a natural-language entry that accepts an attached resume and JD without exposing JSON, paths or idempotency details.

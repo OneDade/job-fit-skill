@@ -1,6 +1,6 @@
 {
   "name": "@job-fit/skill",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Evidence-grounded local Agent Skill for job-fit analysis and resume tailoring",
   "license": "MIT",
   "type": "module",

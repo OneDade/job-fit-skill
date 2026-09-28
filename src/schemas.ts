@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TEMPLATE_IDS } from "./template-catalog.js";
 
 export const SCHEMA_VERSION = "1.0.0" as const;
 const localPath = z.string().min(1).max(1024).refine((v) => !v.includes("\0"), "path contains NUL");
@@ -22,7 +23,7 @@ export const optimizeResumeRequestSchema = z.object({
   confirmedChangeIds: z.array(z.string().min(1)).default([]),
   rejectedChangeIds: z.array(z.string().min(1)).default([]),
   proposalFile: localPath.optional(),
-  templateId: z.enum(["ats-classic", "ats-compact", "ats-graduate"]).default("ats-classic"),
+  templateId: z.enum(TEMPLATE_IDS).default("ats-minimal"),
   identity: z.object({ name: z.string().min(1), email: z.string().email().optional(), phone: z.string().min(5).optional() }).strict().optional(),
 }).strict();
 export const renderResumeRequestSchema = z.object({

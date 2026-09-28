@@ -6,4 +6,9 @@ describe("Skill policy", () => {
   it("supports a natural-language portable workflow without overstating verification", async () => { const skill = await read("SKILL.md"); expect(skill).toContain("分析我的简历和这个 JD，告诉我值不值得投，然后帮我生成定制简历"); expect(skill).toContain("Portable mode"); expect(skill).toContain("Never imply that portable mode received the CLI's deterministic verification"); });
   it("uses plain Chinese labels instead of raw state codes in Chinese answers", async () => { const skill = await read("SKILL.md"); for (const phrase of ["已经符合", "相关经验能迁移", "明确缺少", "简历里没写清", "新用户引导", "企业软件或企业服务产品"]) expect(skill).toContain(phrase); expect(skill).toContain("Never show the raw state codes as headings or badges"); });
   it("requires provenance and facts", async () => { expect(await read("references/tailor.md")).toContain("Every resume claim must carry evidence_id"); const analysis = await read("references/analyze.md"); for (const phrase of ["JD quotation or location", "verified resource URL", "platform-generated"]) expect(analysis).toContain(phrase); });
+  it("keeps company research private, templates ATS-safe, and interviews evidence-grounded", async () => {
+    const research = await read("references/company-research.md"); expect(research).toContain("never include the candidate's name"); expect(research).toContain("FACT");
+    const templates = await read("references/resume-templates.md"); for (const id of ["ats-minimal", "professional-business", "technical-project"]) expect(templates).toContain(id); expect(templates).toContain("Never rasterize");
+    const interview = await read("references/interview-prep.md"); expect(interview).toContain("speaking bullets"); expect(interview).toContain("evidence IDs");
+  });
 });

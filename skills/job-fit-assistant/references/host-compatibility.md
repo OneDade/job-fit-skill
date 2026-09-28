@@ -14,6 +14,10 @@ After installation, attach or select the resume and JD, then say:
 
 > 分析我的简历和这个 JD，告诉我值不值得投，然后帮我生成定制简历。
 
-The host must be able to read the selected files. DOCX/PDF delivery also requires the host's document-generation capability. When those tools are unavailable, the Skill returns an ATS-friendly Markdown resume instead of pretending a file was generated.
+For the complete resume-and-interview workflow, the user can instead say:
+
+> 根据我的简历和这个 JD，联网调查公司，推荐简历模板，生成 Word/PDF 定制简历和面试准备提纲。
+
+The host must be able to read the selected files. Company research requires browsing, and DOCX/PDF delivery requires document-generation capability. When those tools are unavailable, the Skill states the limitation and returns an ATS-friendly Markdown resume or a research checklist instead of pretending the artifact exists.
 
 Do not claim that installing the Skill alone installs the optional `job-fit` CLI, `@job-fit/core`, a model provider, or a document converter.

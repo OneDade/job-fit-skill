@@ -44,13 +44,13 @@ Do not expose those raw enum codes in an ordinary Chinese answer. Render them as
 
 Use plain Chinese for nearby technical terms as directed by [SKILL.md](../SKILL.md). The internal state remains unchanged for reasoning and structured data.
 
-Do not assign an exact numeric match score in portable mode. Give one qualitative recommendation:
+Do not assign an exact numeric match score in portable mode. When the user asks whether the role is worth applying for, give one qualitative recommendation:
 
 - `建议投递`: no failed hard gate and the central responsibilities have direct or credible transferable evidence;
 - `可以投但有风险`: no failed hard gate, but one or more important requirements are missing or weakly evidenced;
 - `暂不建议投递`: an explicit hard gate fails or the role's central responsibilities lack credible evidence.
 
-State the two or three reasons that control the recommendation. Do not pretend the recommendation predicts an interview or offer.
+State the two or three reasons that control the recommendation. Do not pretend the recommendation predicts an interview or offer. Skip the user-facing recommendation when the request is only to tailor a resume or prepare for interviews; internal requirement matching still supports those tasks.
 
 ## 4. Learning routes
 
@@ -77,13 +77,22 @@ Each proposed bullet keeps its evidence IDs internally. Mark a change high-risk 
 
 Show high-risk items as a compact numbered list with the source evidence and why confirmation is required. The user must accept or reject every item. Rejected items are removed, not softened into another unsupported claim.
 
-## 6. Deliverables
+## 6. Company research, template choice and interview preparation
+
+When requested and browsing is available, follow [company-research.md](company-research.md). Do not send resume text or candidate identity in search queries.
+
+Before rendering, follow [resume-templates.md](resume-templates.md). Recommend one template in a sentence, let the user override it, and use the confirmed content across every format.
+
+After the resume facts are settled, follow [interview-prep.md](interview-prep.md). Produce speaking bullets with evidence references rather than a memorized answer script.
+
+## 7. Deliverables
 
 After confirmation, create:
 
-1. the tailored resume in the strongest available artifact format;
-2. a short apply-decision summary;
-3. a concise change log;
-4. unresolved evidence gaps that must stay out of the resume.
+1. a compact cited company-research note when browsing was requested and available;
+2. the tailored resume in every requested supported format;
+3. a personalized interview-preparation outline when requested;
+4. a concise change log and unresolved evidence gaps that must stay out of the resume;
+5. an apply-decision summary only when the user requested that judgment.
 
-When creating DOCX/PDF with host tools, prefer a single-column ATS-friendly layout. If possible, reopen or re-extract the generated artifact and check that headings, dates, contact fields and bullet reading order survived. Report this as a host-level check, not as verified CLI output.
+When creating DOCX/PDF with host tools, use the selected single-column ATS-safe specification. Reopen or re-extract the generated artifact when the host permits it and check that headings, dates, contact fields, page breaks and bullet reading order survived. Report this as a host-level check, not as verified CLI output.
