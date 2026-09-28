@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-09-28
 
 - Added public-source company research guidance with citations, retrieval dates and privacy-safe search constraints.
 - Added ATS Minimal, Professional Business and Technical Project template choices while preserving legacy CLI template IDs.
