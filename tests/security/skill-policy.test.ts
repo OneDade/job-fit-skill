@@ -8,7 +8,7 @@ describe("Skill policy", () => {
   it("requires provenance and facts", async () => { expect(await read("references/tailor.md")).toContain("Every resume claim must carry evidence_id"); const analysis = await read("references/analyze.md"); for (const phrase of ["JD quotation or location", "verified resource URL", "platform-generated"]) expect(analysis).toContain(phrase); });
   it("keeps company research private, templates ATS-safe, and interviews evidence-grounded", async () => {
     const research = await read("references/company-research.md"); expect(research).toContain("never include the candidate's name"); expect(research).toContain("FACT");
-    const templates = await read("references/resume-templates.md"); for (const id of ["ats-minimal", "professional-business", "technical-project"]) expect(templates).toContain(id); expect(templates).toContain("Never rasterize");
+    const templates = await read("references/resume-templates.md"); for (const id of ["professional-business", "technical-project", "one-page-compact"]) expect(templates).toContain(id); expect(templates).toContain("Never rasterize");
     const interview = await read("references/interview-prep.md"); expect(interview).toContain("speaking bullets"); expect(interview).toContain("evidence IDs");
   });
   it("separates explicit JD requirements from bounded priority hypotheses", async () => {
@@ -32,5 +32,10 @@ describe("Skill policy", () => {
   it("scopes work to the request and follows Chinese resume conventions", async () => {
     const skill = await read("SKILL.md"); for (const phrase of ["Do only what was asked", "Chat reply shape", "keep the JD's own keywords"]) expect(skill).toContain(phrase);
     const templates = await read("references/resume-templates.md"); for (const phrase of ["Chinese-market conventions", "求职意向", "never add these fields"]) expect(templates).toContain(phrase);
+  });
+  it("keeps sample-only text and Windows-missing fonts out of template specifications", async () => {
+    const templates = await read("references/resume-templates.md");
+    for (const leaked of ["LIN YIRAN", "PRODUCT OPERATIONS", "Footer marker"]) expect(templates).not.toContain(leaked);
+    for (const phrase of ["Every visible string in a sample is sample content", "Microsoft YaHei", "leave the footer empty"]) expect(templates).toContain(phrase);
   });
 });

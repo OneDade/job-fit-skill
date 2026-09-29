@@ -1,7 +1,8 @@
 export const TEMPLATE_IDS = [
-  "ats-minimal",
   "professional-business",
   "technical-project",
+  "one-page-compact",
+  "ats-minimal",
   "ats-classic",
   "ats-compact",
   "ats-graduate",
@@ -11,9 +12,10 @@ export type TemplateId = typeof TEMPLATE_IDS[number];
 export type CoreTemplate = "CLASSIC" | "COMPACT" | "GRADUATE";
 
 const CORE_TEMPLATE_BY_ID: Record<TemplateId, CoreTemplate> = {
-  "ats-minimal": "CLASSIC",
   "professional-business": "COMPACT",
   "technical-project": "GRADUATE",
+  "one-page-compact": "CLASSIC",
+  "ats-minimal": "CLASSIC",
   "ats-classic": "CLASSIC",
   "ats-compact": "COMPACT",
   "ats-graduate": "GRADUATE",

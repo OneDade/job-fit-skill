@@ -23,7 +23,7 @@ export const optimizeResumeRequestSchema = z.object({
   confirmedChangeIds: z.array(z.string().min(1)).default([]),
   rejectedChangeIds: z.array(z.string().min(1)).default([]),
   proposalFile: localPath.optional(),
-  templateId: z.enum(TEMPLATE_IDS).default("ats-minimal"),
+  templateId: z.enum(TEMPLATE_IDS).default("professional-business"),
   identity: z.object({ name: z.string().min(1), email: z.string().email().optional(), phone: z.string().min(5).optional() }).strict().optional(),
 }).strict();
 export const renderResumeRequestSchema = z.object({

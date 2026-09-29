@@ -5,6 +5,7 @@ coverage/
 *.tgz
 *.docx
 *.pdf
+!skills/job-fit-assistant/assets/resume-templates/*.docx
 .env
 .env.*
 !.env.example
