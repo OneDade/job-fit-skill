@@ -31,6 +31,18 @@ Legacy CLI IDs `ats-classic`, `ats-compact`, and `ats-graduate` remain accepted 
 
 “Ready to submit” means the user has confirmed the facts and does not need to manually repair typography, spacing, pagination or reading order. It does not remove the user's responsibility to review identity and factual details.
 
+## Chinese-market conventions
+
+Apply these when the target JD is Chinese or the user is applying in mainland China, unless the user asks otherwise:
+
+- Length: one page for students, new graduates (应届生) and candidates with under about three years of experience; two pages at most otherwise. Cut weak or irrelevant items before shrinking fonts or margins.
+- Header: name, phone, email and city. Add `求职意向：{JD 职位名称}` directly under the header, using the JD's exact title.
+- Section order for students and new graduates: 教育背景 → 实习经历 → 项目经历 → 校园经历/获奖 → 技能证书. For experienced candidates: 工作经历 → 项目经历 → 教育背景 → 技能证书.
+- Keep a photo, date of birth, gender, hometown, marital status or political affiliation only when the user's original resume already has it or the user asks; never add these fields, and never infer them.
+- Education lines keep school, degree, major and dates exactly as supplied. Include GPA/rank or school tier labels (985/211/双一流) only when the source resume states them.
+- Bullets start with a verb and state what the candidate did and the result the evidence supports, for example `负责…，通过…，实现…`. Never add a number that is not in the evidence.
+- File name suggestion: `姓名-求职意向-学校或公司.pdf`; Chinese HR systems commonly display the file name.
+
 ## Design provenance
 
 The templates are original specifications informed by public design research, not copied layouts. Useful architectural references include MIT-licensed Reactive Resume and RenderCV; Awesome-CV is a visual reference under LPPL. Do not copy source code or protected design assets unless their license requirements are reviewed and preserved.

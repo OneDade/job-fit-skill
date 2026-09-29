@@ -29,4 +29,8 @@ describe("Skill policy", () => {
     const security = await read("references/security.md"); for (const phrase of ["public task tokens", "public job title", "do not search", "mark the result unknown"]) expect(security).toContain(phrase);
     const skill = await read("SKILL.md"); expect(skill).toContain("it does not reveal the hiring manager's hidden priorities");
   });
+  it("scopes work to the request and follows Chinese resume conventions", async () => {
+    const skill = await read("SKILL.md"); for (const phrase of ["Do only what was asked", "Chat reply shape", "keep the JD's own keywords"]) expect(skill).toContain(phrase);
+    const templates = await read("references/resume-templates.md"); for (const phrase of ["Chinese-market conventions", "求职意向", "never add these fields"]) expect(templates).toContain(phrase);
+  });
 });

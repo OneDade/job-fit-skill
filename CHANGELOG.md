@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 - 2026-09-30
+
+- Rewrote the Skill description in Chinese-first trigger phrases so hosts pick it up for everyday requests such as 值不值得投、帮我改简历、面试会问什么.
+- Made the workflow request-scoped: company research, resume and interview outlines only run when asked, with a one-line offer of the next step.
+- Made portable mode the documented default and moved CLI orchestration details to `tailor.md`.
+- Accepted JD screenshots and user-supplied job-posting links, and resumes that need image reading.
+- Added a conclusion-first chat reply shape and single-message batch confirmation for risky changes.
+- Stopped over-translating everyday terms (JD, AI, SQL) in chat, and kept JD keywords untranslated inside resumes for screening systems.
+- Added Chinese-market resume conventions (one-page rule, 求职意向, section order, no invented personal fields).
+- Added fictional sample materials under `examples/` for trying the Skill.
+- Corrected `UPSTREAM.md`, which still listed interviews as excluded.
+
 ## 0.2.0 - 2026-09-28
 
 - Added public-source company research guidance with citations, retrieval dates and privacy-safe search constraints.

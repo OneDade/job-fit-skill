@@ -13,4 +13,5 @@
 | `tests/test_upskill_skill.py`, `tests/test_security_guards.py` | `tests/security/skill-policy.test.ts` | Invariant-level test adaptation; no Python source copied. |
 
 Not included: Danish job portals, Gmail, Notion, salary features, job discovery,
-application tracking, cover letters, interviews, or Claude-specific permissions.
+application tracking, cover letters or Claude-specific permissions. Company research,
+resume templates and interview preparation (added in 0.2.0) are original to this project.
