@@ -8,15 +8,17 @@ Content and layout are separate. Tailor and fact-check the resume once, then ren
 | --- | --- | --- | --- |
 | 专业商务版 | `professional-business` | Default; product, operations, sales and management roles | Full-height navy spine, split identity header, pale-blue summary block and outcome-first experience |
 | 技术项目版 | `technical-project` | Engineering, data, AI and technical-product roles | Teal section titles, pale-teal contact strip and project-first evidence order |
+| 极简黑白版 | `ats-minimal` | Foreign companies, English JDs, applicant-tracking systems such as Workday, Greenhouse or Moka, and printing | Black and gray only, no colour blocks, no page borders, plain section rules |
 | 一页紧凑版 | `one-page-compact` | Experienced candidates with dense evidence who need a one-page resume | Full-bleed wine header, compact one-column body and short aligned dates |
 
-Legacy CLI IDs `ats-classic`, `ats-compact`, `ats-graduate`, and `ats-minimal` remain accepted for compatibility. `ats-minimal` and `ats-classic` map to the one-page renderer; `ats-compact` maps to professional business; `ats-graduate` maps to technical project.
+Legacy CLI IDs `ats-classic`, `ats-compact`, and `ats-graduate` remain accepted for compatibility. `ats-classic` maps to the plain renderer; `ats-compact` maps to professional business; `ats-graduate` maps to technical project.
 
 ## Recommendation rule
 
 - Default to `professional-business` for a general Chinese application.
 - Recommend `professional-business` when stakeholder scope, commercial outcomes and leadership are central.
 - Recommend `technical-project` when projects, systems, tools and technical decisions carry most of the evidence.
+- Recommend `ats-minimal` when the JD is in English, the employer is a foreign company, the application goes through an online applicant-tracking system, or the user says they will print the resume or cannot tell how it will be read.
 - Recommend `one-page-compact` when the confirmed content is dense but can remain readable on one A4 page.
 - Explain the recommendation in one sentence and let the user override it. Do not ask again when a template was already selected.
 
@@ -30,9 +32,37 @@ Legacy CLI IDs `ats-classic`, `ats-compact`, `ats-graduate`, and `ats-minimal` r
 - Avoid orphan headings, split bullets, clipped text, blank trailing pages and contact details repeated in headers or footers.
 - Reopen or extract each generated artifact. Check name/contact fields, headings, dates, bullet order, page count and PDF text selection before delivery.
 
+## Rendering with the bundled script
+
+When the host can run Python 3 with `python-docx`, render with [`scripts/render_resume.py`](../scripts/render_resume.py) instead of recreating the layout by hand. It produces the same output as the samples every time and re-checks the saved file.
+
+1. Write the confirmed content to a JSON file in a private working folder (not inside the Skill folder):
+
+```json
+{
+  "template": "professional-business",
+  "name": "{姓名}",
+  "target_role": "{JD 职位名称}",
+  "contact": ["{城市}", "{邮箱}", "{电话}"],
+  "sections": [
+    { "type": "summary", "title": "个人概况", "text": "…" },
+    { "type": "skills", "title": "核心技能", "items": [{ "label": "…", "value": "…" }] },
+    { "type": "entries", "title": "工作经历", "items": [{ "org": "…", "role": "…", "date": "2023.03—至今", "bullets": ["…"] }] },
+    { "type": "bullets", "title": "获奖与证书", "items": ["…"] }
+  ]
+}
+```
+
+   Section order is the order in the JSON; choose it from the template rules and the Chinese-market section order below. Every string must already be confirmed content; the script never adds or changes facts. See [`assets/resume-templates/sample-resume.json`](../assets/resume-templates/sample-resume.json) for a complete example.
+2. Run `python3 scripts/render_resume.py resume.json --out {文件名}.docx --pdf` from the Skill folder.
+3. Read the single JSON line it prints. `ok: false` means content is missing or out of order; fix the input and rerun. Relay any page-count or PDF warning to the user in plain language.
+4. If `python-docx` is missing, do not install it silently. Ask once whether to install it (`pip install python-docx`) when the host allows package installation; otherwise use the host's own document tools with the style rules below. If no PDF was produced, say so and suggest exporting from Word or WPS.
+
+`one-page-compact` puts the name in white text on a coloured band. Deliver it as PDF; some recruiting sites' online previews drop the band and the name disappears.
+
 ## Deterministic style specifications
 
-All three templates are one-column, ATS-safe and use selectable text. The sample DOCX files in `../assets/resume-templates/` are the visual source of truth.
+All four templates are one-column, ATS-safe and use selectable text. The sample DOCX files in `../assets/resume-templates/` are the visual source of truth.
 
 ### Professional business
 
@@ -56,6 +86,14 @@ All three templates are one-column, ATS-safe and use selectable text. The sample
 - Use a full-bleed, approximately 4 cm wine `#742B32` header. Place the name and target role on the left and two compact contact lines on the right.
 - Use wine section rules, three aligned skill rows and short dates. Keep the one-column reading order and selectable text.
 - Order: summary, skills, work experience, selected project, education. If content exceeds one page, shorten repetition instead of shrinking the font below the readable floor.
+
+### Plain black and white (极简黑白版)
+
+- A4 with 18 mm side margins and 16 mm top margin.
+- Use only black `#111111`, gray `#555555` and a light gray `#999999` section rule. No shading, page borders, coloured text or background fills.
+- Header: name, then `求职意向：{JD 职位名称}`, then one contact line separated by `|`.
+- Order follows the Chinese-market section order for the candidate's stage. Use `公司  职位  日期` on one line with the date right-aligned by a tab stop.
+- This is the safest choice when the parsing environment is unknown.
 
 Every visible string in a sample is sample content, not layout. Do not copy the sample's name, romanized name, target role, contact details, employers, dates or numbers into a user's resume. Do not add decorative codes such as page numbers like `02`, `01 / SECTION` or `03 / SYSTEM`, and leave the footer empty; the page must contain only the user's confirmed information.
 

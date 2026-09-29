@@ -6,6 +6,9 @@ import { analyzeRequestSchema, deleteLocalDataRequestSchema, optimizeResumeReque
 import { createSafeDirectory, mediaTypeFor, readSafeFile, resolveWorkspace } from "./io/safe-path.js";
 import { atomicWrite, canonicalHash, deleteOwnedState, stateDirectory, writePrivateJson } from "./io/private-store.js";
 import { candidateNamesFromText, sanitizePublicValue } from "./output/pii.js";
+import { exact } from "./core/persisted-shape.js";
+
+const UUID_V4 = "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}";
 
 const markdownReport = (value: unknown): string => `# Job Fit 分析报告 / Analysis Report\n\n> 本报告只包含去标识化分析。学习资源均应保留来源与验证日期。\n\n${JSON.stringify(value, null, 2).split("\n").map((line) => `    ${line}`).join("\n")}\n`;
 export type PreparedFiles = ReadonlyMap<string, Uint8Array>;
@@ -37,14 +40,14 @@ export async function optimizeResume(core: CorePort, root: string, raw: unknown,
   await stateDirectory(root);
   if (!/^\.job-fit\/reports\/[A-Za-z0-9._-]+\.json$/u.test(input.analysisFile)) throw new CliFailure("INVALID_INPUT", "analysis report must be an app-owned private report");
   const reference = JSON.parse(Buffer.from(await fileBytes(root, input.analysisFile, prepared)).toString("utf8")) as { contextId?: unknown; contextFile?: unknown };
-  if (typeof reference.contextId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu.test(reference.contextId) || reference.contextFile !== `.job-fit/contexts/${reference.contextId}.json`) throw new CliFailure("INVALID_INPUT", "analysis report private context reference is invalid");
+  if (typeof reference.contextId !== "string" || !new RegExp(`^${UUID_V4}$`, "iu").test(reference.contextId) || reference.contextFile !== `.job-fit/contexts/${reference.contextId}.json`) throw new CliFailure("INVALID_INPUT", "analysis report private context reference is invalid");
   const persisted = JSON.parse(Buffer.from(await fileBytes(root, reference.contextFile, prepared)).toString("utf8")) as { schemaVersion?: unknown; contextId?: unknown; candidateNames?: unknown; data?: unknown };
-  if (!exactKeys(persisted, ["schemaVersion", "contextId", "candidateNames", "data"]) || persisted.schemaVersion !== "1.0.0" || persisted.contextId !== reference.contextId || !isCandidateNameList(persisted.candidateNames)) throw new CliFailure("INVALID_INPUT", "private analysis context is invalid");
+  if (!exact(persisted, ["schemaVersion", "contextId", "candidateNames", "data"]) || persisted.schemaVersion !== "1.0.0" || persisted.contextId !== reference.contextId || !isCandidateNameList(persisted.candidateNames)) throw new CliFailure("INVALID_INPUT", "private analysis context is invalid");
   const analysis = await core.validateAnalysis(persisted.data);
   const analysisHash = canonicalHash(persisted); const basisHash = proposalBasisHash(input); let proposalDraft;
   if (input.proposalFile) {
     const proposalId = proposalIdFromPath(input.proposalFile); const saved = JSON.parse(Buffer.from(await fileBytes(root, input.proposalFile, prepared)).toString("utf8")) as Record<string, unknown>;
-    if (!exactKeys(saved, ["schemaVersion", "proposalId", "analysisContextId", "analysisHash", "selectedJobId", "templateId", "basisHash", "draftHash", "resumeModel"]) || saved.schemaVersion !== "1.0.0" || saved.proposalId !== proposalId || saved.analysisContextId !== reference.contextId || saved.analysisHash !== analysisHash || saved.selectedJobId !== input.selectedJobId || saved.templateId !== input.templateId || saved.basisHash !== basisHash || saved.draftHash !== canonicalHash(saved.resumeModel)) throw new CliFailure("INVALID_INPUT", "saved proposal is invalid or does not match this request");
+    if (!exact(saved, ["schemaVersion", "proposalId", "analysisContextId", "analysisHash", "selectedJobId", "templateId", "basisHash", "draftHash", "resumeModel"]) || saved.schemaVersion !== "1.0.0" || saved.proposalId !== proposalId || saved.analysisContextId !== reference.contextId || saved.analysisHash !== analysisHash || saved.selectedJobId !== input.selectedJobId || saved.templateId !== input.templateId || saved.basisHash !== basisHash || saved.draftHash !== canonicalHash(saved.resumeModel)) throw new CliFailure("INVALID_INPUT", "saved proposal is invalid or does not match this request");
     proposalDraft = (await core.validateStoredResume({ resumeModel: saved.resumeModel, evidence: analysis.evidence })).resumeModel;
   } else if (input.confirmedChangeIds.length > 0 || input.rejectedChangeIds.length > 0) throw new CliFailure("INVALID_INPUT", "change decisions require proposalFile");
   const result = await core.optimizeResume({ analysis, selectedJobId: input.selectedJobId, confirmedFacts: input.confirmedFacts, confirmedChangeIds: input.confirmedChangeIds, rejectedChangeIds: input.rejectedChangeIds, templateId: input.templateId, ...(proposalDraft ? { proposalDraft } : {}), ...(input.identity ? { identity: input.identity } : {}) });
@@ -58,8 +61,7 @@ export async function optimizeResume(core: CorePort, root: string, raw: unknown,
 
 const safeName = (value: string): string => value.replace(/[^a-zA-Z0-9_-]/g, "-").slice(0, 80) || "resume";
 const proposalBasisHash = (input: { selectedJobId: string; confirmedFacts: unknown; templateId: string; identity?: unknown }): string => canonicalHash({ selectedJobId: input.selectedJobId, confirmedFacts: input.confirmedFacts, templateId: input.templateId, ...(input.identity ? { identity: input.identity } : {}) });
-const proposalIdFromPath = (path: string): string => { const match = /^\.job-fit\/proposals\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.json$/iu.exec(path); if (!match?.[1]) throw new CliFailure("INVALID_INPUT", "proposalFile must reference app-owned private state"); return match[1]; };
-const exactKeys = (value: unknown, keys: string[]): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value) && keys.every((key) => key in value) && Object.keys(value).every((key) => keys.includes(key));
+const proposalIdFromPath = (path: string): string => { const match = new RegExp(`^\\.job-fit/proposals/(${UUID_V4})\\.json$`, "iu").exec(path); if (!match?.[1]) throw new CliFailure("INVALID_INPUT", "proposalFile must reference app-owned private state"); return match[1]; };
 const isCandidateNameList = (value: unknown): value is string[] => Array.isArray(value) && value.length <= 128 && value.every((item) => typeof item === "string" && item === item.trim() && item.length >= 2 && item.length <= 120 && !/[\r\n]/u.test(item));
 const publicVerification = (verification: { passed: boolean; issues?: Array<{ code?: unknown; path?: unknown }> }) => ({ passed: verification.passed, issues: (verification.issues ?? []).map(({ code, path }) => ({ code, path })) });
 export async function renderResume(core: CorePort, rootInput: string, raw: unknown, prepared?: PreparedFiles) {

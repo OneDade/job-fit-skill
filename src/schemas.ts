@@ -2,6 +2,10 @@ import { z } from "zod";
 import { TEMPLATE_IDS } from "./template-catalog.js";
 
 export const SCHEMA_VERSION = "1.0.0" as const;
+export const ACTION_NAMES = ["analyze", "optimize-resume", "render-resume", "delete-local-data"] as const;
+export const ERROR_KINDS = ["INVALID_INPUT", "FILE_ERROR", "IDEMPOTENCY_CONFLICT", "CORE_REJECTED", "DEPENDENCY_UNAVAILABLE", "INTERRUPTED", "INTERNAL_ERROR"] as const;
+export const CORE_ERROR_CODES = ["FILE_INVALID", "FILE_TEXT_UNREADABLE", "JD_INSUFFICIENT", "REPOSITORY_UNAVAILABLE", "MODEL_SCHEMA_INVALID", "RESOURCE_UNVERIFIED", "DOCUMENT_GENERATION_FAILED", "FACT_GATE_FAILED", "DELETE_FAILED"] as const;
+export const RECOVERABILITY = ["USER_FIXABLE", "SYSTEM_RETRYABLE", "HUMAN_REVIEW"] as const;
 const localPath = z.string().min(1).max(1024).refine((v) => !v.includes("\0"), "path contains NUL");
 const repo = z.object({
   provider: z.enum(["github", "gitee"]),
@@ -44,5 +48,5 @@ export type AnalyzeRequest = z.infer<typeof analyzeRequestSchema>;
 export type OptimizeResumeRequest = z.infer<typeof optimizeResumeRequestSchema>;
 export type RenderResumeRequest = z.infer<typeof renderResumeRequestSchema>;
 
-export const successEnvelopeSchema = z.object({ schemaVersion: z.literal(SCHEMA_VERSION), runId: z.string(), action: z.enum(["analyze", "optimize-resume", "render-resume", "delete-local-data"]), status: z.literal("succeeded"), cached: z.boolean(), data: z.unknown() }).strict();
-export const errorEnvelopeSchema = z.object({ schemaVersion: z.literal(SCHEMA_VERSION), runId: z.string(), action: z.enum(["analyze", "optimize-resume", "render-resume", "delete-local-data"]), status: z.literal("failed"), error: z.object({ code: z.enum(["INVALID_INPUT", "FILE_ERROR", "IDEMPOTENCY_CONFLICT", "CORE_REJECTED", "DEPENDENCY_UNAVAILABLE", "INTERRUPTED", "INTERNAL_ERROR"]), message: z.string(), retryable: z.boolean(), coreCode: z.enum(["FILE_INVALID", "FILE_TEXT_UNREADABLE", "JD_INSUFFICIENT", "REPOSITORY_UNAVAILABLE", "MODEL_SCHEMA_INVALID", "RESOURCE_UNVERIFIED", "DOCUMENT_GENERATION_FAILED", "FACT_GATE_FAILED", "DELETE_FAILED"]).optional(), recoverability: z.enum(["USER_FIXABLE", "SYSTEM_RETRYABLE", "HUMAN_REVIEW"]).optional() }).strict() }).strict();
+export const successEnvelopeSchema = z.object({ schemaVersion: z.literal(SCHEMA_VERSION), runId: z.string(), action: z.enum(ACTION_NAMES), status: z.literal("succeeded"), cached: z.boolean(), data: z.unknown() }).strict();
+export const errorEnvelopeSchema = z.object({ schemaVersion: z.literal(SCHEMA_VERSION), runId: z.string(), action: z.enum(ACTION_NAMES), status: z.literal("failed"), error: z.object({ code: z.enum(ERROR_KINDS), message: z.string(), retryable: z.boolean(), coreCode: z.enum(CORE_ERROR_CODES).optional(), recoverability: z.enum(RECOVERABILITY).optional() }).strict() }).strict();
