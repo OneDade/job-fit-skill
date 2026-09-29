@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install python-docx
+      - run: npm ci
+      - run: npm run check
+
+      - name: Check tag matches package version
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $expected" >&2
+            exit 1
+          fi
+
+      - name: Build Skill zip
+        run: |
+          cd skills
+          zip -r -X ../job-fit-assistant.zip job-fit-assistant -x '*.DS_Store'
+          cd ..
+          unzip -l job-fit-assistant.zip
+
+      - name: Publish release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="$(awk -v v="## ${GITHUB_REF_NAME#v} " 'index($0, v) == 1 {on=1; next} /^## / {on=0} on' CHANGELOG.md)"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" job-fit-assistant.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" job-fit-assistant.zip --title "$GITHUB_REF_NAME" --notes "${notes:-See CHANGELOG.md}"
+          fi
