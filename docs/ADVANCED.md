@@ -66,7 +66,7 @@ Use a fresh idempotency key for a new intent. Reuse a key only when retrying exa
 - Only fully confirmed and fact-verified resume models are written under `.job-fit/resume-models`.
 - `render-resume` accepts only verified models from that app-owned directory.
 - User-facing template IDs are `ats-minimal`, `professional-business`, and `technical-project`. Legacy IDs remain accepted for compatibility.
-- Company research and interview-outline generation are host-Agent stages in 0.2.0; the CLI does not claim to verify them.
+- Company research and interview-outline generation are host-Agent stages (since 0.2.0); the CLI does not claim to verify them.
 
 ## CLI contract
 

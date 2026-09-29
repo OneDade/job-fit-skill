@@ -38,13 +38,15 @@ Download `job-fit-assistant.zip` from [Releases](https://github.com/OneDade/job-
 
 ## Step 2: attach your files and use it
 
-Attach or select your resume and one job description, then send:
+Attach or select your resume and one job description (text, file, job-app screenshot, or posting link), then send:
 
 ```text
 Analyze my resume and this job description, tell me whether I should apply, and then create a tailored resume.
 ```
 
-No JSON, command-line setup, or manual keyword extraction is required.
+No JSON, command-line setup, or manual keyword extraction is required. If you only want one part (for example, just the resume or just interview prep), say so and it will not do more.
+
+No real resume at hand? Try the fictional resume and JD in [examples](examples/).
 
 For the complete company-research, resume, and interview workflow, send:
 
