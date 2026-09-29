@@ -1,7 +1,7 @@
-import { SCHEMA_VERSION, type ActionName } from "../schemas.js";
-export type ErrorKind = "INVALID_INPUT" | "FILE_ERROR" | "IDEMPOTENCY_CONFLICT" | "CORE_REJECTED" | "DEPENDENCY_UNAVAILABLE" | "INTERRUPTED" | "INTERNAL_ERROR";
-export type CoreErrorCode = "FILE_INVALID" | "FILE_TEXT_UNREADABLE" | "JD_INSUFFICIENT" | "REPOSITORY_UNAVAILABLE" | "MODEL_SCHEMA_INVALID" | "RESOURCE_UNVERIFIED" | "DOCUMENT_GENERATION_FAILED" | "FACT_GATE_FAILED" | "DELETE_FAILED";
-export type Recoverability = "USER_FIXABLE" | "SYSTEM_RETRYABLE" | "HUMAN_REVIEW";
+import { SCHEMA_VERSION, type ActionName, type CORE_ERROR_CODES, type ERROR_KINDS, type RECOVERABILITY } from "../schemas.js";
+export type ErrorKind = typeof ERROR_KINDS[number];
+export type CoreErrorCode = typeof CORE_ERROR_CODES[number];
+export type Recoverability = typeof RECOVERABILITY[number];
 export class CliFailure extends Error {
   constructor(public readonly kind: ErrorKind, message: string, public readonly retryable = false, public readonly coreCode?: CoreErrorCode, public readonly recoverability?: Recoverability) { super(message); this.name = "CliFailure"; }
 }

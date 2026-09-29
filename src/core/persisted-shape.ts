@@ -1,5 +1,5 @@
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
-const exact = (value: unknown, required: readonly string[], optional: readonly string[] = []): value is Record<string, unknown> => object(value) && required.every((key) => key in value) && Object.keys(value).every((key) => required.includes(key) || optional.includes(key));
+export const exact = (value: unknown, required: readonly string[], optional: readonly string[] = []): value is Record<string, unknown> => object(value) && required.every((key) => key in value) && Object.keys(value).every((key) => required.includes(key) || optional.includes(key));
 const every = (value: unknown, predicate: (entry: unknown) => boolean): boolean => Array.isArray(value) && value.every(predicate);
 const strings = (value: unknown): boolean => every(value, (entry) => typeof entry === "string");
 

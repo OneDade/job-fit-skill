@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { createHash, randomUUID } from "node:crypto";
 import { Command, CommanderError } from "commander";
 import { ZodError } from "zod";
@@ -9,7 +8,7 @@ import { canonicalHash } from "./io/private-store.js";
 import { readSafeFile, resolveWorkspace } from "./io/safe-path.js";
 import { releaseOwnedClaims, RunStore } from "./io/run-store.js";
 import { CliFailure, exitCode, failure, success } from "./output/envelope.js";
-import { requestSchemas, type ActionName } from "./schemas.js";
+import { ACTION_NAMES, requestSchemas, type ActionName } from "./schemas.js";
 import { loadRuntime } from "./runtime/dependencies.js";
 
 type Options = { input: string; root: string; idempotencyKey: string };
@@ -47,13 +46,13 @@ async function prepareReferencedFiles(action: Exclude<ActionName, "delete-local-
 
 export function createProgram(): Command {
   const program = new Command().name("job-fit").description("Evidence-grounded local job-fit assistant").version("0.3.0").showHelpAfterError().exitOverride().configureOutput({ writeOut: (text) => process.stdout.write(text), writeErr: () => undefined });
-  for (const action of ["analyze", "optimize-resume", "render-resume", "delete-local-data"] as const) {
+  for (const action of ACTION_NAMES) {
     program.command(action).description(`${action} action`).option("--input <path>", "request JSON path, or - for stdin", "-").requiredOption("--root <path>", "private workspace root").requiredOption("--idempotency-key <key>", "1–200 character retry key").action((opts: Options) => execute(action, opts));
   }
   return program;
 }
 export async function main(argv = process.argv): Promise<void> {
-  const action = (["analyze", "optimize-resume", "render-resume", "delete-local-data"] as const).find((candidate) => argv.slice(2).includes(candidate)) ?? "analyze";
+  const action = ACTION_NAMES.find((candidate) => argv.slice(2).includes(candidate)) ?? "analyze";
   let stopping = false; const onSignal = () => { if (stopping) return; stopping = true; void (async () => { await releaseOwnedClaims(); process.stderr.write(`${JSON.stringify(failure(randomUUID(), action, new CliFailure("INTERRUPTED", "operation interrupted", true)))}\n`); process.exit(130); })(); };
   process.once("SIGINT", onSignal); process.once("SIGTERM", onSignal);
   try { await createProgram().parseAsync(argv); }

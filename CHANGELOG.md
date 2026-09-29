@@ -19,6 +19,8 @@
 - Added CI and a tag-triggered release workflow that builds `job-fit-assistant.zip`.
 - Fixed the install instructions, which omitted the new `assets` folder.
 - Added `scripts/render_resume.py`, which renders confirmed JSON content into any of the four templates, re-checks the saved DOCX for missing or reordered content, and exports PDF with a page count when LibreOffice is available. The template samples are now built by the same renderer.
+- Fixed the CLI's public-report redaction, which replaced skill names such as `Looker Studio` with `[NAME]`, rewrote JD phrases such as `能够独立负责` to `[NAME]负责`, and treated resume headings such as 自我评价 as candidate names.
+- Removed duplicated action names, error-code lists, key checks and process-liveness helpers in the CLI source.
 - Added six behavioural eval cases under `evals/` (hard gates, inflated course projects, invented metrics, prompt injection in a JD, job comparison, greetings and mock interview) with checklists and a results table.
 - Replaced the initial font-only choices with three visually distinct templates: Professional Business, Technical Project and One-page Compact, with A4 DOCX samples as the visual reference. Legacy template IDs remain accepted.
 

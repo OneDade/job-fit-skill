@@ -5,6 +5,7 @@ import type { CoreDependencies, CoreModule, Evidence, EvidenceInput, JobAnalysis
 import { CliFailure, type CoreErrorCode, type Recoverability } from "../output/envelope.js";
 import type { AnalyzeCoreInput, AnalyzeCoreResult, CorePort, OptimizeCoreInput, OptimizeCoreResult, RenderCoreResult, StoredResumeModel } from "./core-port.js";
 import { isStrictAnalysisContext, isStrictStoredResume } from "./persisted-shape.js";
+import { CORE_ERROR_CODES, RECOVERABILITY } from "../schemas.js";
 
 type CoreTools = Pick<CoreModule, "MaterialParser" | "EvidenceStore">;
 const REQUIRED_CORE_VERSION = "0.1.0";
@@ -99,8 +100,8 @@ function toSkillAnalysis(analysis: JobAnalysis) { const requirements = new Map(a
 function template(templateId: string): ResumeDraft["template"] { const value = toCoreTemplate(templateId); if (!value) throw new CliFailure("INVALID_INPUT", "resume template is invalid"); return value as ResumeDraft["template"]; }
 function resumeChanges(draft: ResumeDraft) { return draft.sections.flatMap(({ bullets }) => bullets.map(({ id, text, highRisk, confirmed, evidenceIds }) => ({ id, text, highRisk, confirmed, evidenceIds }))); }
 function mapCoreError(error: unknown): CliFailure { if (error instanceof CliFailure) return error; const detail = typeof error === "object" && error !== null && "detail" in error ? (error as { detail?: { code?: unknown; recoverability?: unknown; safeMessage?: unknown } }).detail : undefined; if (detail && isCoreCode(detail.code) && isRecoverability(detail.recoverability) && typeof detail.safeMessage === "string") { const retryable = detail.recoverability === "SYSTEM_RETRYABLE"; const kind = detail.code === "FILE_INVALID" || detail.code === "FILE_TEXT_UNREADABLE" ? "FILE_ERROR" : detail.code === "JD_INSUFFICIENT" ? "INVALID_INPUT" : "CORE_REJECTED"; return new CliFailure(kind, coreSafeMessage(detail.code), retryable, detail.code, detail.recoverability); } return new CliFailure("CORE_REJECTED", "Core rejected the request without exposing private input", true); }
-function isCoreCode(value: unknown): value is CoreErrorCode { return typeof value === "string" && ["FILE_INVALID", "FILE_TEXT_UNREADABLE", "JD_INSUFFICIENT", "REPOSITORY_UNAVAILABLE", "MODEL_SCHEMA_INVALID", "RESOURCE_UNVERIFIED", "DOCUMENT_GENERATION_FAILED", "FACT_GATE_FAILED", "DELETE_FAILED"].includes(value); }
-function isRecoverability(value: unknown): value is Recoverability { return value === "USER_FIXABLE" || value === "SYSTEM_RETRYABLE" || value === "HUMAN_REVIEW"; }
+function isCoreCode(value: unknown): value is CoreErrorCode { return (CORE_ERROR_CODES as readonly unknown[]).includes(value); }
+function isRecoverability(value: unknown): value is Recoverability { return (RECOVERABILITY as readonly unknown[]).includes(value); }
 function coreSafeMessage(code: CoreErrorCode): string { return ({ FILE_INVALID: "Core rejected invalid file data", FILE_TEXT_UNREADABLE: "Core could not extract readable file text", JD_INSUFFICIENT: "The job description is insufficient for analysis", REPOSITORY_UNAVAILABLE: "Repository content is unavailable", MODEL_SCHEMA_INVALID: "The model response did not match Core's schema", RESOURCE_UNVERIFIED: "A learning resource could not be verified", DOCUMENT_GENERATION_FAILED: "Resume document generation failed", FACT_GATE_FAILED: "Resume factual verification failed", DELETE_FAILED: "Local data deletion failed" })[code]; }
 async function coreCall<T>(operation: () => T | Promise<T>): Promise<T> { try { return await operation(); } catch (error) { throw mapCoreError(error); } }
 function coreFailure(code: CoreErrorCode, recoverability: Recoverability, safeMessage: string): never { throw new CliFailure("CORE_REJECTED", safeMessage, recoverability === "SYSTEM_RETRYABLE", code, recoverability); }
