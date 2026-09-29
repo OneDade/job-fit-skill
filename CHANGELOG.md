@@ -11,6 +11,13 @@
 - Added Chinese-market resume conventions (one-page rule, 求职意向, section order, no invented personal fields).
 - Added fictional sample materials under `examples/` for trying the Skill.
 - Corrected `UPSTREAM.md`, which still listed interviews as excluded.
+- Added job comparison for 2–10 supplied JDs with a ranked table and shared gaps, in portable mode.
+- Added three evidence-grounded first-message greetings for recruiters (Boss 直聘 and similar apps).
+- Added an interactive mock interview with per-answer feedback and follow-up questions.
+- Added a confirmed-facts file users can bring to the next session instead of re-confirming details.
+- Restored a plain black-and-white template (`ats-minimal`) for foreign employers and applicant-tracking systems.
+- Added CI and a tag-triggered release workflow that builds `job-fit-assistant.zip`.
+- Fixed the install instructions, which omitted the new `assets` folder.
 - Replaced the initial font-only choices with three visually distinct templates: Professional Business, Technical Project and One-page Compact, with A4 DOCX samples as the visual reference. Legacy template IDs remain accepted.
 
 ## 0.2.0 - 2026-09-28

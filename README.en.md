@@ -18,7 +18,7 @@ https://github.com/OneDade/job-fit-skill/tree/main/skills/job-fit-assistant
 Requirements:
 1. Install the complete skills/job-fit-assistant folder only. Do not run repository code or install npm dependencies.
 2. Use the user-level Skills directory supported by the current Agent.
-3. Preserve SKILL.md, agents, references, and templates.
+3. Preserve SKILL.md, agents, assets, references, and templates.
 4. After installation, verify that the Agent recognizes a Skill named job-fit-assistant and report its installation path.
 5. If this client does not support custom Skills, say so directly instead of claiming success.
 ```
@@ -59,9 +59,13 @@ Using my resume and this job description, research the company, recommend a resu
 - One recommendation: apply, apply with risks, or do not apply—plus the decisive reasons.
 - A clear view of direct matches, transferable experience, explicit gaps, and evidence that is missing from the resume.
 - A tailored resume reordered and rewritten for the target role.
-- Three template choices: Professional Business, Technical Project, and One-page Compact.
+- Four template choices: Professional Business, Technical Project, One-page Compact, and Plain (for foreign employers and applicant-tracking systems).
 - Word and PDF output when supported, with pagination, reading-order, and selectable-text checks.
 - Cited company research plus interview questions and evidence-grounded answer outlines.
+- A ranked comparison when you send several job descriptions, including gaps they share.
+- Three short first-message greetings for recruiters, each under 100 Chinese characters.
+- An interactive mock interview with feedback and a follow-up after each answer.
+- A confirmed-facts file you can send next time so you do not re-confirm the same details.
 - No invented experience, metrics, or outcomes when the source material does not support them.
 
 The Agent asks before using risky claims involving metrics, scope, ownership, titles, or dates. It creates DOCX/PDF when the host provides document tools and otherwise delivers an ATS-friendly Markdown resume.

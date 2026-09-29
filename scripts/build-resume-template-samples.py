@@ -368,7 +368,43 @@ def compact() -> Path:
     return path
 
 
+def plain() -> Path:
+    black = "111111"
+    gray = "555555"
+    doc = setup_doc(top=1.6, bottom=1.5, left=1.8, right=1.8)
+    add_text(doc, "林一然", size=18, bold=True, color=black, after=1.5)
+    add_text(doc, "求职意向：产品运营", size=10, color=black, after=1.0)
+    add_text(doc, "杭州 | lin.yiran@example.com | 138 0000 0000", size=9.5, color=gray, after=4.0)
+
+    def heading(text: str):
+        p = add_text(doc, text, size=11, bold=True, color=black, before=7.0, after=3.0, keep=True)
+        set_bottom_border(p, "999999", 4)
+
+    heading("个人概况")
+    add_text(doc, PROFILE, size=10, after=2.0, line=1.15)
+    heading("核心技能")
+    for label, value in DISPLAY_SKILLS:
+        p = add_text(doc, "", size=10, after=1.2)
+        set_font(p.add_run(f"{label}："), 10, bold=True, color=black)
+        set_font(p.add_run(value), 10, color=black)
+    heading("工作经历")
+    for company, role, date, bullets in DISPLAY_EXPERIENCES:
+        add_role(doc, company, role, date, accent=black, size=10.2)
+        for item in bullets:
+            add_bullet(doc, item, size=10, after=1.6, color=black)
+    heading("个人项目")
+    add_role(doc, "大模型回答质量评测实验", "个人实验", "2025.11—2026.01", accent=black, size=10.2)
+    for item in PROJECT[2][:2]:
+        add_bullet(doc, item, size=10, after=1.4, color=black)
+    heading("教育经历")
+    add_role(doc, "华东理工大学", "工商管理 本科", "2018.09—2022.06", accent=black, size=10.2)
+    doc.core_properties.title = "林一然 极简黑白版简历"
+    path = OUTPUT / "ats-minimal.docx"
+    doc.save(path)
+    return path
+
+
 if __name__ == "__main__":
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    for output in (business(), technical(), compact()):
+    for output in (business(), technical(), compact(), plain()):
         print(output)

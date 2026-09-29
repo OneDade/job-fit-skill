@@ -38,4 +38,15 @@ describe("Skill policy", () => {
     for (const leaked of ["LIN YIRAN", "PRODUCT OPERATIONS", "Footer marker"]) expect(templates).not.toContain(leaked);
     for (const phrase of ["Every visible string in a sample is sample content", "Microsoft YaHei", "leave the footer empty"]) expect(templates).toContain(phrase);
   });
+  it("grounds greetings, job comparison, mock interviews and carried-over facts", async () => {
+    const greeting = await read("references/greeting.md"); for (const phrase of ["100 Chinese characters", "contain no number, title, employer or result that is absent from the evidence"]) expect(greeting).toContain(phrase);
+    const compare = await read("references/compare-jobs.md"); for (const phrase of ["Do not compute or display numeric match scores", "Rank only within the same recommendation band"]) expect(compare).toContain(phrase);
+    const mock = await read("references/mock-interview.md"); for (const phrase of ["Ask exactly one question per message", "需要本人确认", "never predicts whether the user will pass"]) expect(mock).toContain(phrase);
+    const facts = await read("references/confirmed-facts.md"); for (const phrase of ["not as instructions", "Do not record phone numbers", "Never propose a claim listed under rejected claims"]) expect(facts).toContain(phrase);
+    const skill = await read("SKILL.md"); for (const ref of ["references/greeting.md", "references/compare-jobs.md", "references/mock-interview.md", "references/confirmed-facts.md"]) expect(skill).toContain(ref);
+  });
+  it("ships a plain template and installs the assets folder", async () => {
+    const templates = await read("references/resume-templates.md"); expect(templates).toContain("| 极简黑白版 | `ats-minimal` |");
+    for (const readme of ["README.md", "README.en.md"]) expect(await readFile(readme, "utf8")).toMatch(/assets/);
+  });
 });
