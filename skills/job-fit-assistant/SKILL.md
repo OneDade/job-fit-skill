@@ -72,9 +72,9 @@ Run only the steps needed for the requested deliverables:
 4. *(recommendation)* Give one qualitative apply recommendation and the two or three reasons that control it.
 5. *(company research, only when requested and browsing is available)* Research the target company from public sources without placing resume text or personal data into search queries. Keep citations, retrieval dates and a fact/inference distinction.
 6. *(resume)* Build a tailored-resume proposal for exactly one JD. Every retained or rewritten claim must trace to evidence.
-7. *(resume)* Recommend one of `ats-minimal`, `professional-business`, or `technical-project` in one sentence and let the user override it. Reuse a choice the user already made.
+7. *(resume)* Recommend one of `professional-business`, `technical-project`, or `one-page-compact` in one sentence and let the user override it. Reuse a choice the user already made.
 8. *(resume)* Show only genuinely risky proposed changes for confirmation: metrics, scope, ownership, production claims, titles, dates and timelines. Batch them into one numbered list so the user can answer in one message (for example "全部接受" or "1、3 接受，2 不要"). If none exist, continue without interrupting.
-9. *(resume)* Create the final resume in each requested supported format: DOCX and PDF when document tools are available, Markdown as the portable fallback. Reopen or re-extract generated documents and check reading order, headings, dates, page breaks and selectable text.
+9. *(resume)* Create the final resume in each requested supported format: DOCX and PDF when document tools are available, Markdown as the portable fallback. Use the matching sample in `assets/resume-templates/` as the visual reference and replace every sample fact with the user's confirmed content. Reopen or re-extract generated documents and check reading order, headings, dates, page breaks and selectable text.
 10. *(interview)* Create an interview-preparation outline in which every question binds a JD requirement to candidate evidence or an explicit evidence gap. Use answer bullets, not a memorized script.
 
 Match the resume language to the target JD unless the user asks otherwise. Preserve the user's existing identity fields in the artifact, but do not repeat phone numbers, email addresses, exact addresses or identifiers in the chat summary.
@@ -116,7 +116,7 @@ For Chinese responses:
 
 ## Verified CLI mode
 
-The Agent owns all orchestration; follow [tailor.md](references/tailor.md) for the confirmation protocol. In short: run `job-fit analyze`, then `job-fit optimize-resume` as a proposal (preserve the opaque `proposalFile`), rerun it with accepted/rejected IDs, then `job-fit render-resume` for DOCX/PDF. Use `job-fit delete-local-data` only after explicit user confirmation. Label CLI results with the returned schema version, and keep JSON envelopes, paths and idempotency mechanics out of the user-facing answer.
+The Agent owns all orchestration; follow [tailor.md](references/tailor.md) for the confirmation protocol. In short: run `job-fit analyze`, then `job-fit optimize-resume` as a proposal (preserve the opaque `proposalFile`), rerun it with accepted/rejected IDs, then render DOCX/PDF from the selected sample in `assets/resume-templates/` when document tools are available, using `job-fit render-resume` only as the fallback. Use `job-fit delete-local-data` only after explicit user confirmation. Label CLI results with the returned schema version, and keep JSON envelopes, paths and idempotency mechanics out of the user-facing answer.
 
 ## Boundaries
 

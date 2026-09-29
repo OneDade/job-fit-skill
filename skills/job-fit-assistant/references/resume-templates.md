@@ -6,17 +6,18 @@ Content and layout are separate. Tailor and fact-check the resume once, then ren
 
 | User-facing template | CLI template ID | Recommend for | Layout rules |
 | --- | --- | --- | --- |
-| ATS 极简版 | `ats-minimal` | Default; most roles and applicant-tracking systems | One column, black/gray, no icons, sidebars, tables, text boxes, rating bars or essential header/footer content |
-| 专业商务版 | `professional-business` | Product, operations, sales and management roles | One column, restrained blue/charcoal accent, compact header, clear outcome hierarchy, no decorative data graphics |
-| 技术项目版 | `technical-project` | Engineering, data and technical roles | One column, projects and technical skills receive stronger hierarchy; no skill meters, logo grids or two-column reading order |
+| 专业商务版 | `professional-business` | Default; product, operations, sales and management roles | Full-height navy spine, split identity header, pale-blue summary block and outcome-first experience |
+| 技术项目版 | `technical-project` | Engineering, data, AI and technical-product roles | Teal section titles, pale-teal contact strip and project-first evidence order |
+| 一页紧凑版 | `one-page-compact` | Experienced candidates with dense evidence who need a one-page resume | Full-bleed wine header, compact one-column body and short aligned dates |
 
-Legacy CLI IDs `ats-classic`, `ats-compact`, and `ats-graduate` remain accepted for compatibility. They map respectively to the three templates above.
+Legacy CLI IDs `ats-classic`, `ats-compact`, `ats-graduate`, and `ats-minimal` remain accepted for compatibility. `ats-minimal` and `ats-classic` map to the one-page renderer; `ats-compact` maps to professional business; `ats-graduate` maps to technical project.
 
 ## Recommendation rule
 
-- Default to `ats-minimal` when the role or parsing environment is uncertain.
+- Default to `professional-business` for a general Chinese application.
 - Recommend `professional-business` when stakeholder scope, commercial outcomes and leadership are central.
 - Recommend `technical-project` when projects, systems, tools and technical decisions carry most of the evidence.
+- Recommend `one-page-compact` when the confirmed content is dense but can remain readable on one A4 page.
 - Explain the recommendation in one sentence and let the user override it. Do not ask again when a template was already selected.
 
 ## Rendering standard
@@ -28,6 +29,39 @@ Legacy CLI IDs `ats-classic`, `ats-compact`, and `ats-graduate` remain accepted 
 - Preserve content order across DOCX, PDF and Markdown.
 - Avoid orphan headings, split bullets, clipped text, blank trailing pages and contact details repeated in headers or footers.
 - Reopen or extract each generated artifact. Check name/contact fields, headings, dates, bullet order, page count and PDF text selection before delivery.
+
+## Deterministic style specifications
+
+All three templates are one-column, ATS-safe and use selectable text. The sample DOCX files in `../assets/resume-templates/` are the visual source of truth.
+
+### Professional business
+
+- A4 with an approximately 17 mm left margin, 15.5 mm right margin and 10.5 mm top margin.
+- Use a full-height navy `#1C4069` spine at the page edge. Keep the header white rather than placing the identity inside a solid banner.
+- Place the name and target role on the left and the compact contact line on the right. Add a romanized name only when the user's original resume already contains one.
+- Put the confirmed summary in a pale-blue `#EAF1F7` block. Use three aligned skill rows and restrained navy section markers.
+- Order: summary, skills, work experience, selected project, education. Use compact dates such as `2023.03—至今`.
+
+### Technical project
+
+- A4 with 16 mm side margins and an approximately 10.5 mm top margin.
+- Use dark `#15333A`, teal `#087F8C` and pale teal `#E6F4F2`.
+- Place the name on the left and the target role (the JD's exact title) on the right. Put contact details in a pale-teal strip beneath the identity row.
+- Use unfilled teal section titles. Do not use solid heading bars.
+- Order: summary, skills, selected project, work experience, education. Put tools, scale, decisions and measured results early in each bullet.
+
+### One-page compact
+
+- A4 with 14 mm body margins and no top inset before the header.
+- Use a full-bleed, approximately 4 cm wine `#742B32` header. Place the name and target role on the left and two compact contact lines on the right.
+- Use wine section rules, three aligned skill rows and short dates. Keep the one-column reading order and selectable text.
+- Order: summary, skills, work experience, selected project, education. If content exceeds one page, shorten repetition instead of shrinking the font below the readable floor.
+
+Every visible string in a sample is sample content, not layout. Do not copy the sample's name, romanized name, target role, contact details, employers, dates or numbers into a user's resume. Do not add decorative codes such as page numbers like `02`, `01 / SECTION` or `03 / SYSTEM`, and leave the footer empty; the page must contain only the user's confirmed information.
+
+Fonts: use `Microsoft YaHei` (微软雅黑) for Chinese text and `Arial` for Latin text. Both ship with Windows, Microsoft Office for Mac and WPS, which covers the machines Chinese recruiters typically use. Do not use `Arial Unicode MS` or other fonts that are missing on Windows; a missing font silently changes line breaks and page count.
+
+The renderer must adapt vertical density to the user's confirmed evidence. It may tighten or relax spacing, but it must never invent achievements, employers, dates or projects merely to fill the page.
 
 “Ready to submit” means the user has confirmed the facts and does not need to manually repair typography, spacing, pagination or reading order. It does not remove the user's responsibility to review identity and factual details.
 

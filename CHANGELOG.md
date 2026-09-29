@@ -11,6 +11,7 @@
 - Added Chinese-market resume conventions (one-page rule, 求职意向, section order, no invented personal fields).
 - Added fictional sample materials under `examples/` for trying the Skill.
 - Corrected `UPSTREAM.md`, which still listed interviews as excluded.
+- Replaced the initial font-only choices with three visually distinct templates: Professional Business, Technical Project and One-page Compact, with A4 DOCX samples as the visual reference. Legacy template IDs remain accepted.
 
 ## 0.2.0 - 2026-09-28
 
