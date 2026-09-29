@@ -6,9 +6,9 @@ Content and layout are separate. Tailor and fact-check the resume once, then ren
 
 | User-facing template | CLI template ID | Recommend for | Layout rules |
 | --- | --- | --- | --- |
-| 专业商务版 02 | `professional-business` | Default; product, operations, sales and management roles | Full-height navy spine, split identity header, pale-blue summary block and outcome-first experience |
-| 技术项目版 03 | `technical-project` | Engineering, data, AI and technical-product roles | Teal system labels, pale-teal contact strip and project-first evidence order |
-| 一页紧凑版 06 | `one-page-compact` | Experienced candidates with dense evidence who need a one-page resume | Full-bleed wine header, compact one-column body and short aligned dates |
+| 专业商务版 | `professional-business` | Default; product, operations, sales and management roles | Full-height navy spine, split identity header, pale-blue summary block and outcome-first experience |
+| 技术项目版 | `technical-project` | Engineering, data, AI and technical-product roles | Teal section titles, pale-teal contact strip and project-first evidence order |
+| 一页紧凑版 | `one-page-compact` | Experienced candidates with dense evidence who need a one-page resume | Full-bleed wine header, compact one-column body and short aligned dates |
 
 Legacy CLI IDs `ats-classic`, `ats-compact`, `ats-graduate`, and `ats-minimal` remain accepted for compatibility. `ats-minimal` and `ats-classic` map to the one-page renderer; `ats-compact` maps to professional business; `ats-graduate` maps to technical project.
 
@@ -34,7 +34,7 @@ Legacy CLI IDs `ats-classic`, `ats-compact`, `ats-graduate`, and `ats-minimal` r
 
 All three templates are one-column, ATS-safe and use selectable text. The sample DOCX files in `../assets/resume-templates/` are the visual source of truth.
 
-### Professional business 02
+### Professional business
 
 - A4 with an approximately 17 mm left margin, 15.5 mm right margin and 10.5 mm top margin.
 - Use a full-height navy `#1C4069` spine at the page edge. Keep the header white rather than placing the identity inside a solid banner.
@@ -42,7 +42,7 @@ All three templates are one-column, ATS-safe and use selectable text. The sample
 - Put the confirmed summary in a pale-blue `#EAF1F7` block. Use three aligned skill rows and restrained navy section markers.
 - Order: summary, skills, work experience, selected project, education. Use compact dates such as `2023.03—至今`.
 
-### Technical project 03
+### Technical project
 
 - A4 with 16 mm side margins and an approximately 10.5 mm top margin.
 - Use dark `#15333A`, teal `#087F8C` and pale teal `#E6F4F2`.
@@ -50,7 +50,7 @@ All three templates are one-column, ATS-safe and use selectable text. The sample
 - Use unfilled teal section titles. Do not use solid heading bars.
 - Order: summary, skills, selected project, work experience, education. Put tools, scale, decisions and measured results early in each bullet.
 
-### One-page compact 06
+### One-page compact
 
 - A4 with 14 mm body margins and no top inset before the header.
 - Use a full-bleed, approximately 4 cm wine `#742B32` header. Place the name and target role on the left and two compact contact lines on the right.
