@@ -16,7 +16,7 @@ Do not expose the full ledger in chat. Show only the evidence IDs and short non-
 
 ## 2. Parse the JD
 
-Extract each explicit requirement with a quotation or locator and classify it as:
+Follow [role-priority.md](role-priority.md). First build a requirement ledger containing only explicit JD statements. Extract each requirement with a quotation or locator and classify it as:
 
 - hard gate;
 - core responsibility;
@@ -24,7 +24,7 @@ Extract each explicit requirement with a quotation or locator and classify it as
 - preferred skill;
 - domain or culture signal.
 
-Do not turn inferred context into a hard gate. Ask for a hard-gate answer only when the JD is explicit and the resume does not establish it.
+Do not turn inferred context into a hard gate. Keep any role-priority hypothesis separate from the explicit requirement ledger and state whether it is explicit, a strong text inference, a weak text inference or unknown. Ask for a hard-gate answer only when the JD is explicit and the resume does not establish it.
 
 ## 3. Match evidence
 

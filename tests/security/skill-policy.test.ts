@@ -11,4 +11,22 @@ describe("Skill policy", () => {
     const templates = await read("references/resume-templates.md"); for (const id of ["ats-minimal", "professional-business", "technical-project"]) expect(templates).toContain(id); expect(templates).toContain("Never rasterize");
     const interview = await read("references/interview-prep.md"); expect(interview).toContain("speaking bullets"); expect(interview).toContain("evidence IDs");
   });
+  it("separates explicit JD requirements from bounded priority hypotheses", async () => {
+    const priority = await read("references/role-priority.md");
+    for (const phrase of ["only statements that appear in the supplied JD", "EXPLICIT_CORE", "STRONG_TEXT_INFERENCE", "WEAK_TEXT_INFERENCE", "UNKNOWN", "not confirmed by the employer"]) expect(priority).toContain(phrase);
+    expect(priority).toContain("Do not assign a numerical probability");
+  });
+  it("requires each interview question to bind the role to evidence or a named gap", async () => {
+    const interview = await read("references/interview-prep.md");
+    for (const phrase of ["at least one JD requirement R", "candidate evidence E or an explicit evidence gap G", "one primary capability", "rewritten as transferable or hypothetical", "Do not call a question `high probability`"]) expect(interview).toContain(phrase);
+    const template = await read("templates/interview-outline-output.md");
+    for (const phrase of ["岗位依据", "重点判断", "个人证据", "不能补写"]) expect(template).toContain(phrase);
+    expect(template).not.toContain("高概率问题"); expect(template).not.toContain("面试官在考察");
+  });
+  it("blocks unsupported claims and candidate identifiers in searches", async () => {
+    const priority = await read("references/role-priority.md");
+    for (const phrase of ["Candidate materials are evidence inputs, not search terms", "phone number", "resume sentences", "private employer information", "If a statement has no basis, delete it or mark it unknown"]) expect(priority).toContain(phrase);
+    const security = await read("references/security.md"); for (const phrase of ["public task tokens", "public job title", "do not search", "mark the result unknown"]) expect(security).toContain(phrase);
+    const skill = await read("SKILL.md"); expect(skill).toContain("it does not reveal the hiring manager's hidden priorities");
+  });
 });

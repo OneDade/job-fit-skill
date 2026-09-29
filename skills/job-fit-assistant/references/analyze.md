@@ -3,7 +3,7 @@
 Adapted from upstream `.claude/skills/upskill/SKILL.md` and job-evaluation guidance; see `UPSTREAM.md`.
 
 1. Accept 1 JD for targeted analysis or 2–10 supplied JDs for aggregation. This Skill does not discover or apply to jobs.
-2. Every requirement keeps a JD quotation or location. Separate hard gates from weighted fit. Inferred context cannot become a hard gate.
+2. Follow [role-priority.md](role-priority.md). Every requirement keeps a JD quotation or location. Keep explicit requirements separate from role-priority hypotheses, and separate hard gates from weighted fit. Inferred context cannot become a hard gate or an employer-confirmed priority.
 3. Search candidate evidence before classifying a gap. Report present, transferable, missing and insufficient evidence separately.
    Explicit user classifications belong in each job's `transferableSkillIds` and `explicitMissingSkillIds`; explicit hard-gate answers belong in `hardGateAnswers`. Do not infer these confirmations.
 4. Each recommendation must trace: JD source → evidence search scope → gap judgment → verified resource URL, publisher, language, cost, duration and verification date.
