@@ -32,6 +32,34 @@ Legacy CLI IDs `ats-classic`, `ats-compact`, and `ats-graduate` remain accepted 
 - Avoid orphan headings, split bullets, clipped text, blank trailing pages and contact details repeated in headers or footers.
 - Reopen or extract each generated artifact. Check name/contact fields, headings, dates, bullet order, page count and PDF text selection before delivery.
 
+## Rendering with the bundled script
+
+When the host can run Python 3 with `python-docx`, render with [`scripts/render_resume.py`](../scripts/render_resume.py) instead of recreating the layout by hand. It produces the same output as the samples every time and re-checks the saved file.
+
+1. Write the confirmed content to a JSON file in a private working folder (not inside the Skill folder):
+
+```json
+{
+  "template": "professional-business",
+  "name": "{姓名}",
+  "target_role": "{JD 职位名称}",
+  "contact": ["{城市}", "{邮箱}", "{电话}"],
+  "sections": [
+    { "type": "summary", "title": "个人概况", "text": "…" },
+    { "type": "skills", "title": "核心技能", "items": [{ "label": "…", "value": "…" }] },
+    { "type": "entries", "title": "工作经历", "items": [{ "org": "…", "role": "…", "date": "2023.03—至今", "bullets": ["…"] }] },
+    { "type": "bullets", "title": "获奖与证书", "items": ["…"] }
+  ]
+}
+```
+
+   Section order is the order in the JSON; choose it from the template rules and the Chinese-market section order below. Every string must already be confirmed content; the script never adds or changes facts. See [`assets/resume-templates/sample-resume.json`](../assets/resume-templates/sample-resume.json) for a complete example.
+2. Run `python3 scripts/render_resume.py resume.json --out {文件名}.docx --pdf` from the Skill folder.
+3. Read the single JSON line it prints. `ok: false` means content is missing or out of order; fix the input and rerun. Relay any page-count or PDF warning to the user in plain language.
+4. If `python-docx` is missing, do not install it silently. Ask once whether to install it (`pip install python-docx`) when the host allows package installation; otherwise use the host's own document tools with the style rules below. If no PDF was produced, say so and suggest exporting from Word or WPS.
+
+`one-page-compact` puts the name in white text on a coloured band. Deliver it as PDF; some recruiting sites' online previews drop the band and the name disappears.
+
 ## Deterministic style specifications
 
 All four templates are one-column, ATS-safe and use selectable text. The sample DOCX files in `../assets/resume-templates/` are the visual source of truth.

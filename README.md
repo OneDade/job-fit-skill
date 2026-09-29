@@ -18,7 +18,7 @@ https://github.com/OneDade/job-fit-skill/tree/main/skills/job-fit-assistant
 安装要求：
 1. 只安装 skills/job-fit-assistant 整个文件夹，不运行仓库代码，也不安装 npm 依赖。
 2. 安装到当前 Agent 支持的用户级 Skills 目录。
-3. 保留 SKILL.md、agents、assets、references 和 templates。
+3. 保留 SKILL.md、agents、assets、references、scripts 和 templates。
 4. 安装完成后，确认能识别名为 job-fit-assistant 的 Skill，并告诉我安装位置。
 5. 如果当前客户端不支持自定义 Skill，请直接说明，不要假装安装成功。
 ```

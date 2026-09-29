@@ -18,7 +18,7 @@ https://github.com/OneDade/job-fit-skill/tree/main/skills/job-fit-assistant
 Requirements:
 1. Install the complete skills/job-fit-assistant folder only. Do not run repository code or install npm dependencies.
 2. Use the user-level Skills directory supported by the current Agent.
-3. Preserve SKILL.md, agents, assets, references, and templates.
+3. Preserve SKILL.md, agents, assets, references, scripts, and templates.
 4. After installation, verify that the Agent recognizes a Skill named job-fit-assistant and report its installation path.
 5. If this client does not support custom Skills, say so directly instead of claiming success.
 ```
